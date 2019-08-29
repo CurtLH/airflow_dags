@@ -7,7 +7,7 @@ import requests
 from bs4 import BeautifulSoup as bs
 
 default_args = {"owner": "curtis", "start_date": datetime(2019, 7, 19)}
-dag = DAG("apples", default_args=default_args, schedule_interval="@daily")
+dag = DAG("get_ads", default_args=default_args, schedule_interval="@daily")
 
 def get_ad_html():
 
