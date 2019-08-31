@@ -100,5 +100,3 @@ def get_color(url):
 def get_id_num(url):
 
     return url.split("/")[5].lower()
-
-

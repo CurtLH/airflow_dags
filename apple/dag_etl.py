@@ -23,6 +23,7 @@ create_table_query = """
      color varchar)
     """
 
+
 def etl(ds, **kwargs):
 
     query = """
