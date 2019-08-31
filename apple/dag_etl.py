@@ -18,7 +18,7 @@ default_args = {
 }
 
 
-dag = DAG("apple_etl", default_args=default_args)
+dag = DAG("apple_etl_ads", default_args=default_args)
 
 create_table_query = """
     CREATE TABLE IF NOT EXISTS apple_refurb_ads
