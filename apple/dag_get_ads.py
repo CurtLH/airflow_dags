@@ -31,7 +31,7 @@ def get_ads_html():
             cur.execute(
                 """INSERT INTO apple_refurb_ads_raw (url, html)
                            VALUES (%s, %s)""",
-                [url, r.text],
+                [url, html],
             )
 
         except:
