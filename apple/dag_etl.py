@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from psycopg2.extras import execute_values
 from psycopg2 import sql
 from bs4 import BeautifulSoup as bs
-import macbook
+import apple
 
 default_args = {"owner": "curtis", "start_date": datetime(2019, 7, 19)}
 dag = DAG("etl_ads", default_args=default_args, schedule_interval="@daily")
@@ -50,11 +50,11 @@ def etl(ds, **kwargs):
             data.append(
                 [
                     url,
-                    macbook.get_id_num(url),
-                    macbook.get_price(soup),
-                    macbook.get_date(soup),
-                    macbook.get_screen(soup),
-                    macbook.get_color(url),
+                    apple.get_id_num(url),
+                    apple.get_price(soup),
+                    apple.get_date(soup),
+                    apple.get_screen(soup),
+                    apple.get_color(url),
                 ]
             )
 
