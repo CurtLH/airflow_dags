@@ -1,5 +1,28 @@
 from bs4 import BeautifulSoup as bs
 from collections import defaultdict
+import requests
+
+
+def get_urls():
+
+    r = requests.get("https://www.apple.com/shop/refurbished/mac/macbook-pro")
+    soup = bs(r.content, "html.parser")
+    ads = soup.find("div", {"class": "refurbished-category-grid-no-js"})
+    urls = set()
+    for a in ads.find_all("a", href=True):
+        urls.add("https://www.apple.com" + a["href"].split("?")[-1])
+
+    return urls
+
+
+def get_html(url):
+
+    r = requests.get(url)
+    if r.status_code == 200:
+        return r.text
+    else:
+        raise ValueError(r.status_code)
+
 
 def get_specs(soup):
 
