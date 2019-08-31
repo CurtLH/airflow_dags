@@ -10,7 +10,8 @@ def get_urls():
     ads = soup.find("div", {"class": "refurbished-category-grid-no-js"})
     urls = set()
     for a in ads.find_all("a", href=True):
-        urls.add("https://www.apple.com" + a["href"].split("?")[-1])
+        url = "https://www.apple.com" + a["href"].split("?")[0]
+        urls.add(url)
 
     return urls
 
