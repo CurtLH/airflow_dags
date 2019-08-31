@@ -26,16 +26,12 @@ def get_ads_html():
 
     urls = apple.get_urls()
     for url in urls:
-        try:
-            html = apple.get_html(url)
-            cur.execute(
-                """INSERT INTO apple_refurb_ads_raw (url, html)
-                           VALUES (%s, %s)""",
-                [url, html],
-            )
-
-        except:
-            pass
+        html = apple.get_html(url)
+        cur.execute(
+            """INSERT INTO apple_refurb_ads_raw (url, html)
+                      VALUES (%s, %s)""",
+            [url, html]
+        )
 
     cur.close()
     conn.close()
