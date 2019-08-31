@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup as bs
 import apple
 
 default_args = {"owner": "curtis", "start_date": datetime(2019, 7, 19)}
-dag = DAG("etl_ads", default_args=default_args, schedule_interval="@daily")
+dag = DAG("apple_etl_ads", default_args=default_args, schedule_interval="@daily")
 
 create_table_query = """
     CREATE TABLE IF NOT EXISTS apple_refurb_ads

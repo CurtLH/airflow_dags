@@ -17,7 +17,7 @@ default_args = {
 dag = DAG("apple_get_ads", default_args=default_args)
 
 
-def get_ads():
+def get_ads_html():
 
     conn = PostgresHook(postgres_conn_id="postgres_curtis", schema="curtis").get_conn()
     conn.autocommit = True
@@ -55,6 +55,6 @@ create_table = PostgresOperator(
     dag=dag,
 )
 
-get_ads = PythonOperator(task_id="get_ads", python_callable=get_ad, dag=dag)
+get_ads = PythonOperator(task_id="get_ads", python_callable=get_ads_html, dag=dag)
 
 get_ads.set_upstream(create_table)
