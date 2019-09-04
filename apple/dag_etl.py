@@ -52,29 +52,28 @@ def etl(ds, **kwargs):
     dest_cur = dest_conn.cursor()
 
     while True:
-        records = src_cur.fetchmany(size=100)
-        data = []
-        for line in records:
-            url = line[2]
-            soup = bs(line[3], "html.parser")
-            data.append(
-                [
-                    url,
-                    apple.get_id_num(url),
-                    apple.get_price(soup),
-                    apple.get_date(soup),
-                    apple.get_screen(soup),
-                    apple.get_color(url),
-                ]
-            )
-
+        records = src_cur.fetchone()
         if not records:
             break
 
-        execute_values(
-            dest_cur,
-            "INSERT INTO apple_refurb_ads (url, id_num, price, date, screen, color) VALUES %s",
-            data,
+        row = []
+        url = records[2]
+        soup = bs(records[3], "html.parser")
+        row.append(
+            [
+                url,
+                apple.get_id_num(url),
+                apple.get_price(soup),
+                apple.get_date(soup),
+                apple.get_screen(soup),
+                apple.get_color(url),
+            ]
+        )
+
+        dest_cur.execute(
+            """INSERT INTO apple_refurb_ads (url, id_num, price, date, screen, color) 
+                            VALUES (%s, %s, %s, %s, %s, %s)""",
+            [i for i in row[0]],
         )
         dest_conn.commit()
 
