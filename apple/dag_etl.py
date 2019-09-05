@@ -89,8 +89,6 @@ create_table = PostgresOperator(
     dag=dag,
 )
 
-etl_ads = PythonOperator(
-    task_id="etl_ads", provide_context=True, python_callable=etl, dag=dag
-)
+etl_ads = PythonOperator(task_id="etl_ads", python_callable=etl, dag=dag)
 
 etl_ads.set_upstream(create_table)
