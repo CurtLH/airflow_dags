@@ -3,8 +3,6 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.operators.postgres_operator import PostgresOperator
 from airflow.hooks.postgres_hook import PostgresHook
 from datetime import datetime, timedelta
-from psycopg2.extras import execute_values
-from psycopg2 import sql
 from bs4 import BeautifulSoup as bs
 import apple
 
@@ -18,7 +16,7 @@ default_args = {
 
 
 dag = DAG(
-    "apple_etl", default_args=default_args, schedule_interval="0 1 * * *", catchup=False
+    "etl", default_args=default_args, schedule_interval="0 1 * * *", catchup=False
 )
 
 create_table_query = """
@@ -37,14 +35,15 @@ create_table_query = """
 def etl():
 
     conn = PostgresHook(postgres_conn_id="postgres_curtis", schema="curtis").get_conn()
-    cur = conn.cursor()
+    src_cur = conn.cursor()
+    dest_cur = conn.cursor()
 
     query = """
     SELECT *
     FROM apple_refurb_ads_raw
     """
 
-    cur.execute(query)
+    src_cur.execute(query)
 
     while True:
         records = src_cur.fetchone()
@@ -65,14 +64,15 @@ def etl():
             ]
         )
 
-        cur.execute(
+        dest_cur.execute(
             """INSERT INTO apple_refurb_ads (url, id_num, price, date, screen, color) 
                             VALUES (%s, %s, %s, %s, %s, %s)""",
             [i for i in row[0]],
         )
         conn.commit()
 
-    cur.close()
+    src_cur.close()
+    dest_cur.close()
     conn.close()
 
 
