@@ -12,13 +12,12 @@ default_args = {
     "owner": "curtis",
     "depends_on_past": False,
     "start_date": datetime(2019, 7, 19),
-    "schedule_interval": "@daily",
     "retries": 1,
     "retry_delay": timedelta(seconds=5),
 }
 
 
-dag = DAG("apple_etl_ads", default_args=default_args)
+dag = DAG("apple_etl", default_args=default_args, schedule_interval="0 1 * * *", catchup=False)
 
 create_table_query = """
     CREATE TABLE IF NOT EXISTS apple_refurb_ads

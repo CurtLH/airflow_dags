@@ -9,13 +9,12 @@ default_args = {
     "owner": "curtis",
     "depends_on_past": False,
     "start_date": datetime(2019, 7, 19),
-    "schedule_interval": "@daily",
     "retries": 1,
     "retry_delay": timedelta(seconds=5),
 }
 
 
-dag = DAG("apple_get_ads", default_args=default_args)
+dag = DAG("apple_get_ads", default_args=default_args, schedule_interval="0 0 * * *", catchup=False)
 
 
 def get_ads_html():
