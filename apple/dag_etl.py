@@ -17,7 +17,9 @@ default_args = {
 }
 
 
-dag = DAG("apple_etl", default_args=default_args, schedule_interval="0 1 * * *", catchup=False)
+dag = DAG(
+    "apple_etl", default_args=default_args, schedule_interval="0 1 * * *", catchup=False
+)
 
 create_table_query = """
     CREATE TABLE IF NOT EXISTS apple_refurb_ads
@@ -32,23 +34,17 @@ create_table_query = """
     """
 
 
-def etl(ds, **kwargs):
+def etl():
+
+    conn = PostgresHook(postgres_conn_id="postgres_curtis", schema="curtis").get_conn()
+    cur = conn.cursor()
 
     query = """
     SELECT *
     FROM apple_refurb_ads_raw
     """
 
-    src_conn = PostgresHook(
-        postgres_conn_id="postgres_curtis", schema="curtis"
-    ).get_conn()
-    dest_conn = PostgresHook(
-        postgres_conn_id="postgres_curtis", schema="curtis"
-    ).get_conn()
-
-    src_cur = src_conn.cursor("serverCursor")
-    src_cur.execute(query)
-    dest_cur = dest_conn.cursor()
+    cur.execute(query)
 
     while True:
         records = src_cur.fetchone()
@@ -69,17 +65,15 @@ def etl(ds, **kwargs):
             ]
         )
 
-        dest_cur.execute(
+        cur.execute(
             """INSERT INTO apple_refurb_ads (url, id_num, price, date, screen, color) 
                             VALUES (%s, %s, %s, %s, %s, %s)""",
             [i for i in row[0]],
         )
-        dest_conn.commit()
+        conn.commit()
 
-    src_cur.close()
-    dest_cur.close()
-    src_conn.close()
-    dest_conn.close()
+    cur.close()
+    conn.close()
 
 
 create_table = PostgresOperator(

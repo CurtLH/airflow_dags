@@ -14,7 +14,12 @@ default_args = {
 }
 
 
-dag = DAG("apple_get_ads", default_args=default_args, schedule_interval="0 0 * * *", catchup=False)
+dag = DAG(
+    "apple_get_ads",
+    default_args=default_args,
+    schedule_interval="0 0 * * *",
+    catchup=False,
+)
 
 
 def get_ads_html():
@@ -29,7 +34,7 @@ def get_ads_html():
         cur.execute(
             """INSERT INTO apple_refurb_ads_raw (url, html)
                       VALUES (%s, %s)""",
-            [url, html]
+            [url, html],
         )
 
     cur.close()
