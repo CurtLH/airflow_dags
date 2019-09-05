@@ -15,10 +15,7 @@ default_args = {
 
 
 dag = DAG(
-    "get_ads",
-    default_args=default_args,
-    schedule_interval="0 0 * * *",
-    catchup=False,
+    "get_ads", default_args=default_args, schedule_interval="0 0 * * *", catchup=False
 )
 
 

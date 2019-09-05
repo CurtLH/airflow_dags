@@ -28,7 +28,9 @@ create_table_query = """
      price int,
      date varchar,
      screen varchar,
-     color varchar)
+     color varchar,
+     PRIMARY KEY (id_num, price)
+     )
     """
 
 
@@ -64,12 +66,15 @@ def etl():
             ]
         )
 
-        dest_cur.execute(
-            """INSERT INTO apple_refurb_ads (url, id_num, price, date, screen, color) 
-                            VALUES (%s, %s, %s, %s, %s, %s)""",
-            [i for i in row[0]],
-        )
-        conn.commit()
+        try:
+            dest_cur.execute(
+                """INSERT INTO apple_refurb_ads (url, id_num, price, date, screen, color) 
+                                VALUES (%s, %s, %s, %s, %s, %s)""",
+                [i for i in row[0]],
+            )
+            conn.commit()
+        except:
+            pass
 
     src_cur.close()
     dest_cur.close()
