@@ -16,7 +16,7 @@ default_args = {
 
 
 dag = DAG(
-    "etl", default_args=default_args, schedule_interval="0 1 * * *", catchup=False
+    "etl", default_args=default_args, schedule_interval="5 14 * * *", catchup=False
 )
 
 create_table_query = """
