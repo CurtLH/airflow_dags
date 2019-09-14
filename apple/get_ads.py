@@ -10,7 +10,7 @@ default_args = {
     "depends_on_past": False,
     "start_date": datetime(2019, 7, 19),
     "retries": 1,
-    "retry_delay": timedelta(seconds=5),
+    "retry_delay": timedelta(seconds=60),
 }
 
 
@@ -53,6 +53,6 @@ create_table = PostgresOperator(
     dag=dag,
 )
 
-get_ads = PythonOperator(task_id="get_ads", python_callable=get_ads_html, dag=dag)
+get_ads = PythonOperator(task_id="get_ads", python_callable=get_ads_html, dag=dag, retries=5)
 
 get_ads.set_upstream(create_table)

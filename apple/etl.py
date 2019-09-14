@@ -11,7 +11,7 @@ default_args = {
     "depends_on_past": False,
     "start_date": datetime(2019, 7, 19),
     "retries": 1,
-    "retry_delay": timedelta(seconds=5),
+    "retry_delay": timedelta(seconds=60),
 }
 
 
