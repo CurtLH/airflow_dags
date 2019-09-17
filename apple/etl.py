@@ -5,6 +5,7 @@ from airflow.hooks.postgres_hook import PostgresHook
 from datetime import datetime, timedelta
 from bs4 import BeautifulSoup as bs
 import apple
+import logging
 
 default_args = {
     "owner": "curtis",
@@ -73,8 +74,10 @@ def etl():
                 [i for i in row[0]],
             )
             conn.commit()
+            logging.info("New record inserted")
         except:
             pass
+            logging.info("Duplicate records")
 
     src_cur.close()
     dest_cur.close()
