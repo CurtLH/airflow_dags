@@ -21,7 +21,7 @@ dag = DAG(
 )
 
 create_table_query = """
-    CREATE TABLE IF NOT EXISTS apple_refurb_ads
+    CREATE TABLE IF NOT EXISTS ads
     (id SERIAL,
      datetime date default current_date,
      url varchar,
@@ -43,7 +43,7 @@ def etl():
 
     query = """
     SELECT *
-    FROM apple_refurb_ads_raw
+    FROM raw
     """
 
     src_cur.execute(query)
@@ -69,7 +69,7 @@ def etl():
 
         try:
             dest_cur.execute(
-                """INSERT INTO apple_refurb_ads (url, id_num, price, date, screen, color) 
+                """INSERT INTO ads (url, id_num, price, date, screen, color) 
                                 VALUES (%s, %s, %s, %s, %s, %s)""",
                 [i for i in row[0]],
             )

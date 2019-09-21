@@ -29,7 +29,7 @@ def get_ads_html():
     for url in urls:
         html = apple.get_html(url)
         cur.execute(
-            """INSERT INTO apple_refurb_ads_raw (url, html)
+            """INSERT INTO raw (url, html)
                       VALUES (%s, %s)""",
             [url, html],
         )
@@ -39,7 +39,7 @@ def get_ads_html():
 
 
 create_table_query = """
-    CREATE TABLE IF NOT EXISTS apple_refurb_ads_raw
+    CREATE TABLE IF NOT EXISTS raw
     (id SERIAL,
      date date default current_date,
      url varchar,
