@@ -37,7 +37,7 @@ create_table_query = """
 
 def etl():
 
-    conn = PostgresHook(postgres_conn_id="postgres_curtis", schema="curtis").get_conn()
+    conn = PostgresHook(postgres_conn_id="postgres_apple").get_conn()
     src_cur = conn.cursor()
     dest_cur = conn.cursor()
 
@@ -87,7 +87,7 @@ def etl():
 create_table = PostgresOperator(
     task_id="create_table",
     sql=create_table_query,
-    postgres_conn_id="postgres_curtis",
+    postgres_conn_id="postgres_apple",
     dag=dag,
 )
 

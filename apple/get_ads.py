@@ -21,7 +21,7 @@ dag = DAG(
 
 def get_ads_html():
 
-    conn = PostgresHook(postgres_conn_id="postgres_curtis", schema="curtis").get_conn()
+    conn = PostgresHook(postgres_conn_id="postgres_apple").get_conn()
     conn.autocommit = True
     cur = conn.cursor()
 
@@ -49,7 +49,7 @@ create_table_query = """
 create_table = PostgresOperator(
     task_id="create_table",
     sql=create_table_query,
-    postgres_conn_id="postgres_curtis",
+    postgres_conn_id="postgres_apple",
     dag=dag,
 )
 
