@@ -69,13 +69,13 @@ def etl():
 
         try:
             dest_cur.execute(
-                """INSERT INTO ads (url, id_num, price, date, screen, color) 
+                """INSERT INTO ads (url, id_num, price, date, screen, color)
                                 VALUES (%s, %s, %s, %s, %s, %s)""",
                 [i for i in row[0]],
             )
             conn.commit()
             logging.info("New record inserted")
-        except:
+        except BaseException:
             pass
             logging.info("Duplicate records")
 

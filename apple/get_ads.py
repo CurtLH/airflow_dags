@@ -53,6 +53,10 @@ create_table = PostgresOperator(
     dag=dag,
 )
 
-get_ads = PythonOperator(task_id="get_ads", python_callable=get_ads_html, dag=dag, retries=5)
+get_ads = PythonOperator(
+    task_id="get_ads",
+    python_callable=get_ads_html,
+    dag=dag,
+    retries=5)
 
 get_ads.set_upstream(create_table)
