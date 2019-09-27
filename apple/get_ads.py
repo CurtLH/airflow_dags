@@ -15,7 +15,7 @@ default_args = {
 
 
 dag = DAG(
-    "get_ads", default_args=default_args, schedule_interval="0 14 * * *", catchup=False
+    "apple_get_ads", default_args=default_args, schedule_interval="0 14 * * *", catchup=False
 )
 
 
