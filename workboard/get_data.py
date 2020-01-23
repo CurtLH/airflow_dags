@@ -114,9 +114,10 @@ def get_team_member_data():
     for t in team_ids:
         r = requests.get(base_url + "/team/{}".format(t), params=params)
         if r.status_code != 200:
-            raise ValueError(
+            logging.warning(
                 "Request not successful. Status code {}".format(r.status_code)
             )
+            pass
         else:
             team = r.json()["data"]["team"]
             try:
