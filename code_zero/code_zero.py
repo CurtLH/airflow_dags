@@ -9,11 +9,14 @@ default_args = {
     "owner": "curtis",
     "depends_on_past": False,
     "start_date": datetime(2020, 3, 19),
-    "schedule_interval": "@daily",
 }
 
 dag = DAG(
-    "get_files_from_s3", default_args=default_args, catchup=True, max_active_runs=1
+    "get_files_from_s3",
+    default_args=default_args,
+    catchup=True,
+    max_active_runs=1,
+    "schedule_interval": "@daily"
 )
 
 
@@ -47,12 +50,14 @@ def etl_files(ds_nodash, **kwargs):
     for key in keys:
         s3_key = f"s3://{bucket_name}/{key}"
         data = hook.read_key(key, bucket_name="htprawscrapes")
-        ad = Bedpage(data)
-        x = vars(ad)
-        del x['soup']
-        sha = sha256(json.dumps(x, sort_keys=True).encode('utf-8')).hexdigest()
 
         try:
+
+            ad = Bedpage(data)
+            x = vars(ad)
+            del x['soup']
+            sha = sha256(json.dumps(x, sort_keys=True).encode('utf-8')).hexdigest()
+
             cur.execute(
                 """INSERT INTO ads (s3_key, sha256, ad_id, city, category, url, title, body, published_date, modified_date, phone, email, location, age)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
