@@ -50,7 +50,7 @@ def etl_files(ds_nodash, **kwargs):
         ad = Bedpage(data)
         x = vars(ad)
         del x['soup']
-        sha256 = sha256(json.dumps(x, sort_keys=True).encode('utf-8')).hexdigest()
+        sha = sha256(json.dumps(x, sort_keys=True).encode('utf-8')).hexdigest()
 
         try:
             cur.execute(
@@ -59,7 +59,7 @@ def etl_files(ds_nodash, **kwargs):
                 """,
                 [
                     s3_key,
-                    sha256, 
+                    sha, 
                     x["ad_id"],
                     x["city"],
                     x["category"],
