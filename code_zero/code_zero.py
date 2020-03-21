@@ -28,6 +28,8 @@ def check_prefix(ds_nodash, **kwargs):
 
 
 def etl_files(ds_nodash, **kwargs):
+    import json
+    from hashlib import sha256
     from code_zero.bedpage import Bedpage
 
     conn = PostgresHook(postgres_conn_id="postgres_bedpage").get_conn()
@@ -47,14 +49,17 @@ def etl_files(ds_nodash, **kwargs):
         data = hook.read_key(key, bucket_name="htprawscrapes")
         ad = Bedpage(data)
         x = vars(ad)
+        del x['soup']
+        sha256 = sha256(json.dumps(x, sort_keys=True).encode('utf-8')).hexdigest()
 
         try:
             cur.execute(
-                """INSERT INTO ads (s3_key, ad_id, city, category, url, title, body, published_date, modified_date, phone, email, location, age)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """INSERT INTO ads (s3_key, sha256, ad_id, city, category, url, title, body, published_date, modified_date, phone, email, location, age)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """,
                 [
                     s3_key,
+                    sha256, 
                     x["ad_id"],
                     x["city"],
                     x["category"],
