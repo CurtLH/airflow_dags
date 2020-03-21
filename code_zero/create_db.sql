@@ -10,7 +10,7 @@ CREATE DATABASE bedpage;
 -- create a table for the bedpage ads
 CREATE TABLE ads (
   id SERIAL PRIMARY KEY,
-  sha256 varchar,
+  sha256 varchar UNIQUE NOT NULL,
   s3_key varchar,
   datetime_load timestamp default CURRENT_TIMESTAMP,
   ad_id varchar,
