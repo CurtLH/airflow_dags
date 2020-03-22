@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.hooks.postgres_hook import PostgresHook
 from airflow.hooks.S3_hook import S3Hook
+from airflow.operators.postgres_operator import PostgresOperator
 from airflow.operators.python_operator import PythonOperator
 
 default_args = {
@@ -20,8 +21,17 @@ dag = DAG(
 )
 
 
+table_exists_query = """
+  SELECT EXISTS (
+     SELECT FROM information_schema.tables
+     WHERE  table_schema = 'bedpage'
+     AND    table_name   = 'raw'
+     );
+"""
+
+
 def check_prefix(ds_nodash, **kwargs):
-    hook = S3Hook("aws_s3_lsu")
+    hook = S3Hook("lsu_aws_s3")
     prefix = f"bedpage/{ds_nodash}"
     check = hook.check_for_prefix("htprawscrapes", prefix, "/")
     if check == True:
@@ -35,11 +45,11 @@ def etl_files(ds_nodash, **kwargs):
     from hashlib import sha256
     from code_zero.bedpage import Bedpage
 
-    conn = PostgresHook(postgres_conn_id="postgres_bedpage").get_conn()
+    conn = PostgresHook(postgres_conn_id="lsu_aws_postgres").get_conn()
     conn.autocommit = True
     cur = conn.cursor()
 
-    hook = S3Hook("aws_s3_lsu")
+    hook = S3Hook("lsu_asw_s3")
     bucket_name = "htprawscrapes"
     prefix = f"bedpage/{ds_nodash}/"
 
@@ -71,12 +81,16 @@ def etl_files(ds_nodash, **kwargs):
     conn.close()
 
 
-check_for_prefix = PythonOperator(
-    task_id="check_prefix", python_callable=check_prefix, provide_context=True, dag=dag
+table_exists = PostgresOperator(
+    task_id="table_exists", sql=table_exists_query, postgres_conn_id="lsu_aws_postgres", dag=dag
 )
 
-etl_files_from_s3 = PythonOperator(
+prefix_exists = PythonOperator(
+    task_id="prefix_exists", python_callable=check_prefix, provide_context=True, dag=dag
+)
+
+etl_files = PythonOperator(
     task_id="etl_files", python_callable=etl_files, provide_context=True, dag=dag
 )
 
-check_for_prefix >> etl_files_from_s3
+table_exists >> prefix_exists >> etl_files
