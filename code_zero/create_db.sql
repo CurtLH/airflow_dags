@@ -1,29 +1,19 @@
 -- drop the existing database
-DROP DATABASE IF EXISTS bedpage;
+DROP DATABASE IF EXISTS escorts;
 
--- recreate the database
-CREATE DATABASE bedpage;
+-- create the database
+CREATE DATABASE escorts;
 
 -- connect to the database
-\c bedpage
+\c escorts
 
--- create a table for the bedpage ads
-CREATE TABLE ads (
-  id SERIAL PRIMARY KEY,
-  sha256 varchar UNIQUE NOT NULL,
-  s3_key varchar,
-  datetime_load timestamp default CURRENT_TIMESTAMP,
-  ad_id varchar,
-  city varchar,
-  category varchar,
-  url varchar,
-  title varchar,
-  body varchar,
-  published_date timestamp,
-  modified_date timestamp,
-  phone varchar,
-  email varchar,
-  location varchar,
-  age varchar
-);
-
+-- create schema and initial table for bedpage
+CREATE SCHEMA bedpage
+  CREATE TABLE raw (
+    id SERIAL PRIMARY KEY,
+    datetime_load TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    s3_key VARCHAR,
+    sha256 VARCHAR UNIQUE NOT NULL,
+    ad JSONB
+  )
+;
