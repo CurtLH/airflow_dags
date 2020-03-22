@@ -13,7 +13,7 @@ default_args = {
 }
 
 dag = DAG(
-    "get_files_from_s3",
+    "ETL_files_from_S3",
     default_args=default_args,
     catchup=True,
     max_active_runs=1,
@@ -69,7 +69,7 @@ def etl_files(ds_nodash, **kwargs):
             sha = sha256(json.dumps(x, sort_keys=True).encode('utf-8')).hexdigest()
 
             cur.execute(
-                """INSERT INTO ads_raw (s3_key, sha256, ad) VALUES (%s, %s, %s)""",
+                """INSERT INTO bedpage.raw (s3_key, sha256, ad) VALUES (%s, %s, %s)""",
                 [s3_key, sha, json.dumps(x)],
                 
             )
