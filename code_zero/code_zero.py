@@ -47,7 +47,7 @@ def etl_files(ds_nodash, **kwargs):
 
     print(f"There are {len(keys)} in {prefix}")
 
-    for key in keys:
+    for key in keys[:10]:
         s3_key = f"s3://{bucket_name}/{key}"
         data = hook.read_key(key, bucket_name="htprawscrapes")
 
@@ -59,25 +59,9 @@ def etl_files(ds_nodash, **kwargs):
             sha = sha256(json.dumps(x, sort_keys=True).encode('utf-8')).hexdigest()
 
             cur.execute(
-                """INSERT INTO ads (s3_key, sha256, ad_id, city, category, url, title, body, published_date, modified_date, phone, email, location, age)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                """,
-                [
-                    s3_key,
-                    sha, 
-                    x["ad_id"],
-                    x["city"],
-                    x["category"],
-                    x["url"],
-                    x["title"],
-                    x["body"],
-                    x["published_date"],
-                    x["modified_date"],
-                    x["phone"],
-                    x["email"],
-                    x["location"],
-                    x["age"],
-                ],
+                """INSERT INTO ads_raw (s3_key, sha256, ad) VALUES (%s, %s, %s)""",
+                [s3_key, sha, json.dumps(x)],
+                
             )
             print(f"{s3_key} inserted into the database")
         except:
