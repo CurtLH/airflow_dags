@@ -57,7 +57,7 @@ def etl_files(ds_nodash, **kwargs):
 
     print(f"There are {len(keys)} in {prefix}")
 
-    for key in keys[:10]:
+    for key in keys:
         s3_key = f"s3://{bucket_name}/{key}"
         data = hook.read_key(key, bucket_name="htprawscrapes")
 
