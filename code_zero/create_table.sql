@@ -8,5 +8,5 @@ CREATE TABLE bedpage.raw2 (
   s3_key VARCHAR,
   filename VARCHAR,
   sha256 VARCHAR UNIQUE NOT NULL,
-  data JSONB
+  ad JSONB
  );
