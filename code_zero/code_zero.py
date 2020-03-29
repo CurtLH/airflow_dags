@@ -47,6 +47,7 @@ def etl_files(ds_nodash, **kwargs):
     import tarfile
     import boto3
     import json
+    import shutil
     from hashlib import sha256
     from code_zero.bedpage import Bedpage
 
@@ -128,11 +129,11 @@ def etl_files(ds_nodash, **kwargs):
                 pass
 
         # delete tmp directory
-        os.rmdir(file_dir)
+        shutil.rmtree(file_dir, ignore_errors=True)
         print(f"Folder for {f} deleted") 
 
     # delete the tmp dir
-    os.rmdir(tmp_dir)
+    shutil.rmtree(tmp_dir, ignore_errors=True)
     print(f"Folder for {key} deleted")
 
 
