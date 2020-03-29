@@ -158,11 +158,4 @@ etl_files = PythonOperator(
     dag=dag
 )
 
-etl_ads = PostgresOperator(
-    task_id="etl_ads", 
-    sql="sql/etl_ads.sql", 
-    postgres_conn_id="lsu_aws_postgres", 
-    dag=dag
-)
-
-table_exists >> prefix_exists >> etl_files >> etl_ads
+table_exists >> prefix_exists >> etl_files
