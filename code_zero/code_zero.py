@@ -9,8 +9,7 @@ from airflow.operators.python_operator import PythonOperator
 default_args = {
     "owner": "curtis",
     "depends_on_past": False,
-    "start_date": datetime(2020, 3, 20),
-    "retries": 1
+    "start_date": datetime(2020, 3, 20)
 }
 
 dag = DAG(
