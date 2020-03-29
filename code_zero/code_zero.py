@@ -9,7 +9,7 @@ from airflow.operators.python_operator import PythonOperator
 default_args = {
     "owner": "curtis",
     "depends_on_past": False,
-    "start_date": datetime(2020, 3, 19)
+    "start_date": datetime(2020, 3, 20)
 }
 
 dag = DAG(
@@ -17,7 +17,8 @@ dag = DAG(
     default_args=default_args,
     catchup=True,
     max_active_runs=1,
-    schedule_interval="@daily"
+    schedule_interval="@daily",
+    retries=0
 )
 
 
