@@ -42,12 +42,3 @@ CREATE USER user2 WITH PASSWORD 'some_secret_passwd';
 GRANT readonly TO user1;
 GRANT readwrite TO user2;
 GRANT readwrite TO curtis;
-
--- create table for bedpage data
-CREATE TABLE bedpage.raw (
-  id SERIAL PRIMARY KEY,
-  datetime_load TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  s3_key VARCHAR,
-  sha256 VARCHAR UNIQUE NOT NULL,
-  ad JSONB
- );
