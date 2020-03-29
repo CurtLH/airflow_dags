@@ -120,7 +120,7 @@ def etl_files(ds_nodash, **kwargs):
                 # insert row into database
                 cur.execute(
                     """INSERT INTO bedpage.raw2 (s3_key, filename, sha256, data) VALUES (%s, %s, %s, %s)""",
-                    [key, f, sha, json.dumps(x)],
+                    [key, f.split('/')[-1], sha, json.dumps(x)],
                 
                 )
                 print(f"{f} inserted into the database")
