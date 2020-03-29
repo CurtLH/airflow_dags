@@ -50,7 +50,7 @@ def etl_files(ds_nodash, **kwargs):
         os.mkdir(tmp_dir)
 
     # iterate over each file
-    for key in keys[:1]:
+    for key in keys:
 
         # print the key
         print(key)
@@ -79,8 +79,8 @@ def etl_files(ds_nodash, **kwargs):
             try:
 
                 # read the file
-                with open(f) as f:
-                    data = f.read()
+                with open(f) as f_open:
+                    data = f_open.read()
                 print("File opened")
 
                 # parse HTML
@@ -94,12 +94,12 @@ def etl_files(ds_nodash, **kwargs):
 
                 # create sha256 of dict
                 sha = sha256(json.dumps(x, sort_keys=True).encode('utf-8')).hexdigest()
-                print("Create SHA")
+                print("sha256 created")
 
                 # insert row into database
                 cur.execute(
-                    """INSERT INTO bedpage.raw2 (s3_key, sha256, ad) VALUES (%s, %s, %s)""",
-                    [key, sha, json.dumps(x)],
+                    """INSERT INTO bedpage.raw2 (s3_key, filename, sha256, data) VALUES (%s, %s, %s, %s)""",
+                    [key, f, sha, json.dumps(x)],
                 
                 )
                 print(f"{f} inserted into the database")
@@ -108,7 +108,12 @@ def etl_files(ds_nodash, **kwargs):
                 pass
 
         # delete tmp directory
+        os.rmdir(file_dir)
+        print(f"Folder for {f} deleted") 
 
+    # delete the tmp dir
+    os.rmdir(tmp_dir)
+    print(f"Folder for {key} deleted")
 
 etl_files = PythonOperator(
     task_id="etl_files", python_callable=etl_files, provide_context=True, dag=dag
