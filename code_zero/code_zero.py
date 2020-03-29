@@ -138,19 +138,31 @@ def etl_files(ds_nodash, **kwargs):
 
 
 table_exists = PostgresOperator(
-    task_id="table_exists", sql=table_exists_query, postgres_conn_id="lsu_aws_postgres", dag=dag
+    task_id="table_exists", 
+    sql=table_exists_query, 
+    postgres_conn_id="lsu_aws_postgres", 
+    dag=dag
 )
 
 prefix_exists = PythonOperator(
-    task_id="prefix_exists", python_callable=check_prefix, provide_context=True, dag=dag
+    task_id="prefix_exists", 
+    python_callable=check_prefix, 
+    provide_context=True, 
+    dag=dag
 )
 
 etl_files = PythonOperator(
-    task_id="etl_files", python_callable=etl_files, provide_context=True, dag=dag
+    task_id="etl_files", 
+    python_callable=etl_files, 
+    provide_context=True, 
+    dag=dag
 )
 
 etl_ads = PostgresOperator(
-    task_id="etl_ads", sql="sql/etl_ads.sql", postgres_conn_id="lsu_aws_postgres", dag=dag)
+    task_id="etl_ads", 
+    sql="sql/etl_ads.sql", 
+    postgres_conn_id="lsu_aws_postgres", 
+    dag=dag
 )
 
-table_exists >> prefix_exists >> etl_files
+table_exists >> prefix_exists >> etl_files >> etl_ads
