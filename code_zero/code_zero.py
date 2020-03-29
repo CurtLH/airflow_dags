@@ -15,7 +15,7 @@ default_args = {
 dag = DAG(
     "ETL_files_from_S3",
     default_args=default_args,
-    catchup=False,
+    catchup=True,
     max_active_runs=1,
     schedule_interval="@daily"
 )
