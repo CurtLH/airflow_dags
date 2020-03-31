@@ -13,7 +13,7 @@ default_args = {
 }
 
 dag = DAG(
-    "ETL_files_from_S3",
+    "ETL_files",
     default_args=default_args,
     catchup=True,
     max_active_runs=1,
