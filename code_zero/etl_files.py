@@ -25,7 +25,7 @@ table_exists_query = """
   SELECT EXISTS (
      SELECT FROM information_schema.tables
      WHERE  table_schema = 'bedpage'
-     AND    table_name   = 'raw2'
+     AND    table_name   = 'raw'
      );
 """
 
@@ -119,7 +119,7 @@ def etl_files(ds_nodash, **kwargs):
 
                 # insert row into database
                 cur.execute(
-                    """INSERT INTO bedpage.raw2 (s3_key, filename, sha256, ad) VALUES (%s, %s, %s, %s)""",
+                    """INSERT INTO bedpage.raw (s3_key, filename, sha256, ad) VALUES (%s, %s, %s, %s)""",
                     [key, f.split('/')[-1], sha, json.dumps(x)],
                 
                 )

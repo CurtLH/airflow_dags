@@ -61,8 +61,3 @@ where
 		bedpage.ads
 	where
 		id = bedpage.raw.id );
-	
-select phone from bedpage.ads limit 10;
-
-select column_name, data_type from information_schema.columns
-where table_name = 'ads' and table_schema = 'bedpage';
