@@ -5,6 +5,7 @@ from airflow.hooks.postgres_hook import PostgresHook
 from airflow.hooks.S3_hook import S3Hook
 from airflow.operators.postgres_operator import PostgresOperator
 from airflow.operators.python_operator import PythonOperator
+from airflow.operators.dagrun_operator import TriggerDagRunOperator
 
 # define the path to the template files
 tmpl_search_path = "/home/curtis/github/airflow_dags/code_zero/sql"
@@ -16,7 +17,7 @@ default_args = {
 }
 
 dag = DAG(
-    "etl_files_from_s3_to_postgres",
+    "etl_s3_to_raw",
     default_args=default_args,
     catchup=True,
     max_active_runs=1,
@@ -141,17 +142,23 @@ raw_table_exists = PostgresOperator(
 )
 
 prefix_exists = PythonOperator(
+    dag=dag,
     task_id="prefix_exists", 
     python_callable=check_prefix, 
     provide_context=True, 
-    dag=dag
 )
 
 etl_files = PythonOperator(
+    dag=dag,
     task_id="etl_files", 
     python_callable=etl_files, 
-    provide_context=True, 
-    dag=dag
+    provide_context=True
 )
 
-raw_table_exists >> prefix_exists >> etl_files
+trigger_etl_ads = TriggerDagRunOperator(
+    dag=dag,
+    task_id="trigger_etl_ads",
+    trigger_dag_id="etl_raw_to_ads"
+)
+
+raw_table_exists >> prefix_exists >> etl_files >> trigger_etl_ads

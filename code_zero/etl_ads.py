@@ -14,7 +14,7 @@ default_args = {
 }
 
 dag = DAG(
-    "ETL_ads",
+    "etl_raw_to_ads",
     default_args=default_args,
     catchup=True,
     max_active_runs=1,
@@ -29,4 +29,18 @@ raw_table_exists = PostgresOperator(
     sql="/raw_table_exists.sql"
 )
 
-raw_table_exists
+etl_ads = PostgresOperator(
+    dag=dag,
+    task_id="etl_ads", 
+    postgres_conn_id="lsu_aws_postgres",
+    sql="/etl_ads.sql"
+)
+
+etl_phones = PostgresOperator(
+    dag=dag,
+    task_id="etl_phones", 
+    postgres_conn_id="lsu_aws_postgres",
+    sql="/etl_phones.sql"
+)
+
+raw_table_exists >> etl_ads >> etl_phones
