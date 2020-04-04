@@ -6,6 +6,9 @@ from airflow.hooks.S3_hook import S3Hook
 from airflow.operators.postgres_operator import PostgresOperator
 from airflow.operators.python_operator import PythonOperator
 
+# define the path to the template files
+tmpl_search_path = "/home/curtis/github/airflow_dags/code_zero/sql"
+
 default_args = {
     "owner": "curtis",
     "depends_on_past": False,
@@ -13,21 +16,13 @@ default_args = {
 }
 
 dag = DAG(
-    "ETL_files",
+    "etl_files_from_s3_to_postgres",
     default_args=default_args,
     catchup=True,
     max_active_runs=1,
-    schedule_interval="@daily"
+    schedule_interval="@daily",
+    template_searchpath=tmpl_search_path
 )
-
-
-table_exists_query = """
-  SELECT EXISTS (
-     SELECT FROM information_schema.tables
-     WHERE  table_schema = 'bedpage'
-     AND    table_name   = 'raw'
-     );
-"""
 
 
 def check_prefix(ds_nodash, **kwargs):
@@ -51,12 +46,13 @@ def etl_files(ds_nodash, **kwargs):
     from hashlib import sha256
     from code_zero.bedpage import Bedpage
 
+    # obtain a cursor for the database
     conn = PostgresHook(postgres_conn_id="lsu_aws_postgres").get_conn()
     conn.autocommit = True
     cur = conn.cursor()
 
+    # define the connection to S3
     s3 = boto3.client('s3')
-
     hook = S3Hook("lsu_asw_s3")
     bucket_name = "htprawscrapes"
     prefix = f"bedpage/{ds_nodash}/"
@@ -137,11 +133,11 @@ def etl_files(ds_nodash, **kwargs):
     print(f"Folder for {key} deleted")
 
 
-table_exists = PostgresOperator(
-    task_id="table_exists", 
-    sql=table_exists_query, 
-    postgres_conn_id="lsu_aws_postgres", 
-    dag=dag
+raw_table_exists = PostgresOperator(
+    dag=dag,
+    task_id="raw_table_exists", 
+    postgres_conn_id="lsu_aws_postgres",
+    sql="/raw_table_exists.sql"
 )
 
 prefix_exists = PythonOperator(
@@ -158,4 +154,4 @@ etl_files = PythonOperator(
     dag=dag
 )
 
-table_exists >> prefix_exists >> etl_files
+raw_table_exists >> prefix_exists >> etl_files
