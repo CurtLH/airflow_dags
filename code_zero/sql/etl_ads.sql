@@ -1,5 +1,5 @@
 -- create table for bedpage ads
-create table if not exists bedpage.ads2 ( 
+create table if not exists bedpage.ads ( 
 	id numeric primary key,
 	post_id varchar,
 	date_published timestamp,
@@ -19,7 +19,7 @@ create table if not exists bedpage.ads2 (
 -- insert records that are not already in the table
  insert
 	into
-	bedpage.ads2 (id,
+	bedpage.ads (id,
 	post_id,
 	date_published,
 	date_modified,
@@ -49,12 +49,12 @@ select
 	ad -> 'details' ->> 'mobile' as mobile,
 	ad -> 'details' ->> 'location' as location
 from
-	bedpage.raw2
+	bedpage.raw
 where
 	not exists (
 	select
 		id
 	from
-		bedpage.ads2
+		bedpage.ads
 	where
-		id = bedpage.raw2.id );
+		id = bedpage.raw.id );
