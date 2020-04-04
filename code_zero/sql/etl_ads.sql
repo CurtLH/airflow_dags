@@ -1,25 +1,28 @@
+-- drop the table
+DROP TABLE IF EXISTS bedpage.ads;
+
 -- create table for bedpage ads
-create table if not exists bedpage.ads2 ( 
+create table if not exists bedpage.ads ( 
 	id numeric primary key,
-	post_id varchar,
+	post_id numeric,
 	date_published timestamp,
 	date_modified timestamp,
-	title varchar,
-	body varchar,
-	url varchar,
-	city varchar,
-	category varchar,
-	poster_age varchar,
-	email varchar,
-	phone varchar,
-	mobile varchar,
-	location varchar
+	title text,
+	body text,
+	url text,
+	city text,
+	category text,
+	poster_age text,
+	email text,
+	phone text[],
+	mobile text,
+	location text
 );
 
 -- insert records that are not already in the table
  insert
 	into
-	bedpage.ads2 (id,
+	bedpage.ads (id,
 	post_id,
 	date_published,
 	date_modified,
@@ -35,7 +38,7 @@ create table if not exists bedpage.ads2 (
 	location)
 select
 	id,
-	ad -> 'details' ->> 'post id' as post_id,
+	(ad -> 'details' ->> 'post id')::numeric as post_id,
 	(ad -> 'details' ->> 'datePublished')::timestamp as date_published,
 	(ad -> 'details' ->> 'dateModified')::timestamp as date_modified,
 	ad ->> 'title' as title,
@@ -45,16 +48,21 @@ select
 	split_part(ad -> 'details' ->> 'url', '/', 4) as category,
 	ad -> 'details' ->> 'poster''s age' as poster_age,
 	ad -> 'details' ->> 'email' as email,
-	ad ->> 'phone' as phone,
+	(string_to_array(ad ->> 'phone', ';')) as phone,
 	ad -> 'details' ->> 'mobile' as mobile,
 	ad -> 'details' ->> 'location' as location
 from
-	bedpage.raw2
+	bedpage.raw
 where
 	not exists (
 	select
 		id
 	from
-		bedpage.ads2
+		bedpage.ads
 	where
-		id = bedpage.raw2.id );
+		id = bedpage.raw.id );
+	
+select phone from bedpage.ads limit 10;
+
+select column_name, data_type from information_schema.columns
+where table_name = 'ads' and table_schema = 'bedpage';

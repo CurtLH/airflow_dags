@@ -1,20 +1,24 @@
+-- drop table phones
+DROP TABLE IF EXISTS bedpage.phones;
+
 -- create table for bedpage ads
-create table if not exists bedpage.phones2 ( 
+create table if not exists bedpage.phones ( 
   id numeric,
   phone text
 );
 
 -- insert records that are not already in the table
-insert into bedpage.phones2 (
+insert into bedpage.phones (
   id,
   phone
 )
 select
-  raw_id,
-  unnest(string_to_array(phone::text, ';'))
-from bedpage.ads2
-where not exists (
+  distinct
+  id,
+  unnest(phone)
+from bedpage.ads
+where phone is not null and not exists (
   select id
-  from bedpage.phones2
-  where id = bedpage.ads2.raw_id
+  from bedpage.phones
+  where id = bedpage.ads.id
 );
