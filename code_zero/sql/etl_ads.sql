@@ -1,19 +1,22 @@
+-- drop the table
+DROP TABLE IF EXISTS bedpage.ads;
+
 -- create table for bedpage ads
 create table if not exists bedpage.ads ( 
 	id numeric primary key,
-	post_id varchar,
+	post_id numeric,
 	date_published timestamp,
 	date_modified timestamp,
-	title varchar,
-	body varchar,
-	url varchar,
-	city varchar,
-	category varchar,
-	poster_age varchar,
-	email varchar,
-	phone varchar,
-	mobile varchar,
-	location varchar
+	title text,
+	body text,
+	url text,
+	city text,
+	category text,
+	poster_age text,
+	email text,
+	phone text[],
+	mobile text,
+	location text
 );
 
 -- insert records that are not already in the table
@@ -35,7 +38,7 @@ create table if not exists bedpage.ads (
 	location)
 select
 	id,
-	ad -> 'details' ->> 'post id' as post_id,
+	(ad -> 'details' ->> 'post id')::numeric as post_id,
 	(ad -> 'details' ->> 'datePublished')::timestamp as date_published,
 	(ad -> 'details' ->> 'dateModified')::timestamp as date_modified,
 	ad ->> 'title' as title,
@@ -45,7 +48,7 @@ select
 	split_part(ad -> 'details' ->> 'url', '/', 4) as category,
 	ad -> 'details' ->> 'poster''s age' as poster_age,
 	ad -> 'details' ->> 'email' as email,
-	ad ->> 'phone' as phone,
+	(string_to_array(ad ->> 'phone', ';')) as phone,
 	ad -> 'details' ->> 'mobile' as mobile,
 	ad -> 'details' ->> 'location' as location
 from
