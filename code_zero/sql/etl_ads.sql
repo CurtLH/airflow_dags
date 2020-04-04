@@ -1,6 +1,3 @@
--- drop the table
-DROP TABLE IF EXISTS bedpage.ads;
-
 -- create table for bedpage ads
 create table if not exists bedpage.ads ( 
 	id numeric primary key,
