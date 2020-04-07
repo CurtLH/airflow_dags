@@ -35,10 +35,9 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA bedpage GRANT USAGE ON SEQUENCES TO readwrite
 -- create users
 DROP USER user1;
 DROP USER user2;
-CREATE USER user1 WITH PASSWORD 'some_secret_passwd';
-CREATE USER user2 WITH PASSWORD 'some_secret_passwd';
+CREATE USER user1 WITH PASSWORD 'password';
+CREATE USER user2 WITH PASSWORD 'password';
 
 -- grant privileges to users
 GRANT readonly TO user1;
 GRANT readwrite TO user2;
-GRANT readwrite TO curtis;
