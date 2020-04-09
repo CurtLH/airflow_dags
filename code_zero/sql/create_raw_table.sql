@@ -1,8 +1,5 @@
--- drop the existing table
-DROP TABLE IF EXISTS bedpage.raw;
-
 -- create table for bedpage data
-CREATE TABLE bedpage.raw (
+CREATE TABLE IF NOT EXISTS bedpage.raw (
   id SERIAL PRIMARY KEY,
   datetime_load TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   s3_key VARCHAR,
