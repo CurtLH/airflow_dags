@@ -11,7 +11,6 @@ create table if not exists bedpage.ads (
 	category text,
 	poster_age text,
 	email text,
-	phone text[],
 	mobile text,
 	location text
 );
@@ -30,7 +29,6 @@ create table if not exists bedpage.ads (
 	category,
 	poster_age,
 	email,
-	phone,
 	mobile,
 	location)
 select
@@ -45,7 +43,6 @@ select
 	split_part(ad -> 'details' ->> 'url', '/', 4) as category,
 	ad -> 'details' ->> 'poster''s age' as poster_age,
 	ad -> 'details' ->> 'email' as email,
-	(string_to_array(ad ->> 'phone', ';')) as phone,
 	ad -> 'details' ->> 'mobile' as mobile,
 	ad -> 'details' ->> 'location' as location
 from

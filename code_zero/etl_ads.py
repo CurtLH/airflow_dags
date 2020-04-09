@@ -36,11 +36,4 @@ etl_ads = PostgresOperator(
     sql="/etl_ads.sql"
 )
 
-etl_phones = PostgresOperator(
-    dag=dag,
-    task_id="etl_phones", 
-    postgres_conn_id="lsu_aws_postgres",
-    sql="/etl_phones.sql"
-)
-
-raw_table_exists >> etl_ads >> etl_phones
+raw_table_exists >> etl_ads
